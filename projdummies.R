@@ -14,12 +14,15 @@ projdummies <- function(hhid, tid, w){
     return()
   }
   ######################
+  hhid_fac <- as.factor(hhid)
+  tid_fac <- as.factor(tid)
+  
   
   obs <- nrow(w)
-  N <- max(hhid)
-  T <- max(tid)
+  N <- nlevels(hhid_fac)
+  T <- nlevels(tid_fac)
   
-  DH <- sparseMatrix(i=hhid,j=tid,x=w,dims=list(N,T))
+  DH <- sparseMatrix(i=as.numeric(hhid_fac),j=as.numeric(tid_fac),x=w,dims=list(N,T))
   DD <- rowSums(DH)
   HH <- colSums(DH)
   
@@ -29,23 +32,9 @@ projdummies <- function(hhid, tid, w){
   invHH <- sparseMatrix(i=1:(T-1), j=1:(T-1), x=HH^-1, dims=list(T-1,T-1))
   invDD <- sparseMatrix(i=1:N, j=1:N, x=DD^-1, dims=list(N,N))
   
-  
-  useinv <- 1
-  return_list <- list()
-  if (!useinv){
-    if (N<T){
-      ## doesn't work
-      invA <- diag(DD) - DH %*% invHH %*% t(DH)
-      B <- solve(-invA,DH %*% invHH, sparse=TRUE)
-      C <- invDD - ((invDD %*% DH)) /(invA %*% t(DH) %*% invDD)
-    }else {
-      # doesn't work
-      invC <- diag(HH) - t(DH) %*% invDD %*% DH
-      A <- invHH - mrdivide((invHH %*% t(DH)) , (invC %*% DH %*% invHH))
-      B <-  -A %*% DH %*% invHH
-    }
-  } else {
-    if (N<T){
+    return_list <- list()
+
+  if (N<T){
       A <- solve(diag(DD) - DH %*% invHH %*% t(DH))
       invHHDH <- invHH %*% t(DH)
       B <- -A %*% DH %*% invHH
@@ -67,5 +56,4 @@ projdummies <- function(hhid, tid, w){
       return_list$invDDDH <- invDDDH
     }
     return(return_list)
-  }
 }
