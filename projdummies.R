@@ -17,6 +17,9 @@ projdummies <- function(hhid, tid, w){
   hhid_fac <- as.factor(hhid)
   tid_fac <- as.factor(tid)
   
+  return_list <- list()
+  return_list$hhid <- hhid_fac
+  return_list$tid <- tid_fac
   
   obs <- nrow(w)
   N <- nlevels(hhid_fac)
@@ -32,7 +35,6 @@ projdummies <- function(hhid, tid, w){
   invHH <- sparseMatrix(i=1:(T-1), j=1:(T-1), x=HH^-1, dims=list(T-1,T-1))
   invDD <- sparseMatrix(i=1:N, j=1:N, x=DD^-1, dims=list(N,N))
   
-    return_list <- list()
 
   if (N<T){
       A <- solve(diag(DD) - DH %*% invHH %*% t(DH))
