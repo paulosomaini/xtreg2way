@@ -1,7 +1,7 @@
 # avar R dev
 # Brian Chivers, DARC Team
 
-avar <- function(X, e, group, J){
+avar <- function(X, e, group=NULL, J=NULL){
   library("pracma")
   L <- dim(X)[1]
   K <- dim(X)[2]
@@ -9,12 +9,12 @@ avar <- function(X, e, group, J){
   
   ## Check if dimensions match
   if (L != L2){
-    print("Infinite values in w not supported")
-    #return()
+    print("The 1st dimensions of X and e must match")
+    return()
   }
   
   # If J isn't passed, construct it
-  if (!exists("J")) {
+  if (is.null(J)) {
     J <- t(X) %*% X
   }
   
@@ -22,7 +22,7 @@ avar <- function(X, e, group, J){
   
   eX <- sparseMatrix(i=1:L, j=1:L, x=as.numeric(e), dims=list(L,L)) %*% X
   
-  if ((length(group)!=L) | (G==L) ){
+  if (is.null(group) | (length(group)!=L) | (G==L) ){
     V <- t(eX) %*% eX
   } else {
     eX <- sparseMatrix(i=as.numeric(group), j=1:L, x=1, dims=list(G,L)) %*% eX
