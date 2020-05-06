@@ -45,11 +45,11 @@ avar <- function(X, e, group=NULL, J=NULL) {
                      x = as.numeric(e), dims = list(L, L)) %*% X
 
   if (is.null(group) | (length(group) != L) | (G == L)) {
-    V <- Matrix::t(eX) %*% eX
+    V <- t(eX) %*% eX
   } else {
     eX <- Matrix::sparseMatrix(i = as.numeric(group), j = 1:L,
                        x = 1, dims = list(G, L)) %*% eX
-    V <- Matrix::t(eX) %*% eX
+    V <- t(eX) %*% eX
   }
 
   matCov <- pracma::mrdivide(pracma::mldivide(J, as.matrix(V)), J)

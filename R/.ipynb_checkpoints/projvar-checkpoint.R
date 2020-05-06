@@ -48,9 +48,9 @@ projvar <- function(var, struc) {
 
     Dy <- Matrix::rowSums(aux)
     Ty <- Matrix::colSums(aux)
-    Ty <- Ty[1:(length(Ty)-1)]
-    if (N < T) {
+    Ty <- Ty[seq_len(Ty) - 1]
 
+    if (N < T) {
       delta <- A %*% Dy + B %*% Ty;
       tau <- Matrix::crossprod(B, Dy) +
              invHH %*% Ty +
