@@ -37,7 +37,7 @@ avar <- function(X, e, group=NULL, J=NULL) {
 
   # If J isn't passed, construct it
   if (is.null(J)) {
-    J <- t(X) %*% X
+    J <- t(as.matrix(X)) %*% X
   }
 
   G <- nlevels(group)
