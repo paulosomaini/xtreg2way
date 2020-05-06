@@ -10,7 +10,7 @@
 #' @param X The matrix of covariates, size N-by-K
 #' @param iid The group ID, size N-by-1
 #' @param tid The time ID, size N-by-1
-#' @param w (optional) The vector of weights, size N-by-1.  If ommitted, w will be set to 1 for all observations
+#' @param w (optional) The vector of weights, size N-by-1.  If omitted, w will be set to 1 for all observations
 #' @param struc (optional) This list contains the results from the first step of the algorithm.  To save computational time, you can rerun the algorithm on different columns by providing this struc.
 #' @param se (optional) This indicates standard error estimate to be calulcated.  Possible values include:
 #'        se=="0" : standard errors assuming homoscedasticity and no within  group correlation or serial correlation.
