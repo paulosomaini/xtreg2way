@@ -41,7 +41,7 @@
 xtreg2way <- function(y, X, iid = NULL, tid = NULL, w = NULL, struc = NULL,
                       se = "", noise = NULL) {
   struc_is_null <- is.null(struc)
-  X <- Matrix::Matrix(X)
+  X <- as.matrix(X)
   obs <- dim(X)[1]
   K <- dim(X)[2]
 
