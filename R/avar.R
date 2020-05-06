@@ -52,6 +52,6 @@ avar <- function(X, e, group=NULL, J=NULL) {
     V <- Matrix::t(eX) %*% eX
   }
 
-  matCov <- pracma::mrdivide(pracma::mldivide(J, as.matrix(V)), J)
+  matCov <- pracma::mrdivide(pracma::mldivide(as.matrix(J), as.matrix(V)), as.matrix(J))
   return(matCov)
 }
