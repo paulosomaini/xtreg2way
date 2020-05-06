@@ -3,7 +3,7 @@
 
 #' Projection Dummies
 #'
-#' \code{projdummies} returns necessary matrices to project variables across fixed effect dummies.
+#' \code{projdummies} returns necessary matrices to project variables on fixed effect dummies.
 #' The input parameters all need to be of the same length.
 #'
 #'

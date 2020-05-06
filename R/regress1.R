@@ -6,8 +6,8 @@
 #' \code{regress1} performs an OLS regression based on the projected variables y and X.
 #'
 #'
-#' @param X A matrix or vector of independant variable(s)
-#' @param y The dependant variable
+#' @param X A matrix or vector of independent variable(s)
+#' @param y The dependent variable
 #' @return A list which contains X'X, the returned coefficients beta, and residuals res
 #'
 #'

@@ -6,7 +6,7 @@
 #' \code{avar} calculated the asymptotic variance of the regression estimation
 #'
 #'
-#' @param X A matrix or vector of independant variable(s)
+#' @param X A matrix or vector of independent variable(s)
 #' @param e The residuals from the regression
 #' @param group (optional) The cluster identifier (hhid from \code{projdummies})
 #' @param J (optional) This is assumed to be X'X, and can be input if pre-calculated

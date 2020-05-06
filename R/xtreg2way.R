@@ -6,7 +6,7 @@
 #' \code{xtreg2way} estimates a 2-way fixed effect model absorbing the two set of dummies and reports standard errors.
 #'
 #'
-#' @param y The dependant variable, size N-by-1
+#' @param y The dependent variable, size N-by-1
 #' @param X The matrix of covariates, size N-by-K
 #' @param iid The group ID, size N-by-1
 #' @param tid The time ID, size N-by-1
@@ -24,7 +24,7 @@
 #' aVarHat (K-by-K) estimate of the matrix of variances and covariance of  the estimator.
 #' yp (N-by-1) the residual of the projection of y on the two sets of  dummies.
 #' Xp (N-by-K) the residual of the projection of each column of X on the two  sets of dummies.
-#' struc (structure) results of the first step of the algorithm.
+#' struc (list) results of the first step of the algorithm.
 
 #'
 #'
