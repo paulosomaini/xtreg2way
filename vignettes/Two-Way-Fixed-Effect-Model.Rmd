@@ -1,0 +1,95 @@
+---
+title: "Two-Way-Fixed-Effect-Model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Two-Way-Fixed-Effect-Model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(xtreg2way)
+```
+
+The `xtreg2way` package is an algorithm to efficiently estimate a two-way fixed effects model.  This algorithm is adapted from the [Matlab code](https://soma.people.stanford.edu/research) written for [this paper](https://soma.people.stanford.edu/sites/g/files/sbiybj4171/f/jem-2014-0008.pdf).  
+
+To begin, we will generate sample data. It's likely you already have data if you wish to use this package; Skip to the bottom to see how this is used.  First, we decide how many groups and time effects we want.  These are the two effects in the "two-way fixed effects" model.
+```{r}
+numgroups <- 1000
+T <- 200
+```
+
+Next, we will assign each observation to a group and time effect.  These are stored in `hhid` and `tid`.  The variable `w` is a weight for each observation.
+```{r}
+observations <- numgroups * T
+e <- 1:observations
+
+## Create groups and weights
+hhid <- floor((e - 1) / T + 1)
+tid <-  e - (hhid - 1) * T
+w <- pracma::rand(n = numgroups, m = 1)
+w <- w[hhid]
+```
+
+Now each observation has a group, time factor, and weight.  Next, we will generate two random `x` values as our independant variables, based on these effects.  
+```{r}
+#Randomly create effects for groups
+heffect <- pracma::randn(n = numgroups, m = 1)
+teffect <- pracma::randn(n = T, m = 1)
+
+#Generate independant variables 
+x1 <- pracma::randn(n = observations, m = 1) + 
+  0.5 * heffect[hhid] + 0.25 * teffect[tid]
+
+x2 <- pracma::randn(n = observations, m = 1) - 
+  0.25 * heffect[hhid] + 0.5 * teffect[tid]
+```
+
+Finally, we will generate a random error term, and then create our `y` dependant variable from the variables created.
+```{r}
+#Generate Random Error
+autoc <- pracma::rand(n = numgroups, m = 1)
+initialv <- pracma::randn(n = numgroups, m = 1)
+
+u <- pracma::randn(n = observations, m = 1)
+for (o in 1:observations) {
+  if (tid[o] > 1){
+    u_1 <- u[o-1]
+  } else {
+    u_1 <- initialv[hhid[o]]
+  }
+  u[o] <- autoc[hhid[o]] * u_1 + u[o]
+}
+
+# Generate dependant variable
+y <- 1 + x1 - x2 + heffect[hhid] + teffect[tid] + u
+```
+
+The function `xtreg2way` has two uses.  The first time you use it, you must specify, `y`,`X`,`hhid`, and `tid`.  The weights vector `w` is assumed to be all 1's if omitted.  
+```{r}
+#XTREG2WAY
+output <- xtreg2way(y, data.frame(x1,x2), hhid, tid, w, noise="1")
+```
+Using the `noise="1"` parameter, we can see the regression coefficients for `x1` and `x2` printed here, as well as standard errors, t-stat values, and p-values.  Additionally, the `output` variable has several objects.  \
+
+`betaHat`  is a vector of the regression coefficients.
+`aVarHat` is the asymptotic variance of the estimator
+`y` and `X` are the input variables projected onto the two-way dummy matrices.
+`struc` contains several matrices necessary to perform this regression again on different independant variables, for the same set of observations.
+
+
+The second way to use `xtreg2way` is to use the `struc` object from the first run, but now on a different set of columns.  Below, we see the same process but only using `x1` now.
+```{r}
+#XTREG2WAY second time
+
+output2 <- xtreg2way(y, x1, struc=output$struc)
+```
+
+Providing `struc` saves computation time, making the algorithm much faster.  The output variable `output2` now only contains `betaHat` and `aVarHat`.  
