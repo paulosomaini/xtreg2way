@@ -7,9 +7,9 @@
 regress1(y, X)
 }
 \arguments{
-\item{y}{The dependant variable}
+\item{y}{The dependent variable}
 
-\item{X}{A matrix or vector of independant variable(s)}
+\item{X}{A matrix or vector of independent variable(s)}
 }
 \value{
 A list which contains X'X, the returned coefficients beta, and residuals res
@@ -18,13 +18,17 @@ A list which contains X'X, the returned coefficients beta, and residuals res
 \code{regress1} performs an OLS regression based on the projected variables y and X.
 }
 \examples{
-hhid <- c("a","b","c")
-tid <- c("1","2","3")
-w <- c(1,1,1)
-x1 <- c(1,2,3)
-y <- c(2,4,6)
+hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
+tid <- c("1","1" ,"1" ,"2","2" ,"3","3","3" ,"4","4","5" ,"5","6","6" ,"6")
+w <- rep(1, 15)
+x1 <- rnorm(15, mean=50, sd=10)   
+x2 <- rnorm(15, mean=50, sd=10)
+y <- x1 + rnorm(15, mean=50, sd=10)
+
 struc <- projdummies(hhid, tid, w)
-x1_projected <- projvar(x1, struc)
-y_projected <- projvar(y, struc)
-reg <- regress1(y_projected, x1_projected)
+x1p <- projvar(x1, struc)
+x2p <- projvar(x2, struc)
+yp <- projvar(y, struc)
+
+reg <- regress1(yp, data.frame(x1p,x2p))
 }

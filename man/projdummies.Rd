@@ -21,12 +21,12 @@ A list will be returned with necessary matrices to project upon.
    hhid and tid as factors will always be returned, as well as the original weights w that are passed.
 }
 \description{
-\code{projdummies} returns necessary matrices to project variables across fixed effect dummies.
+\code{projdummies} returns necessary matrices to project variables on fixed effect dummies.
 The input parameters all need to be of the same length.
 }
 \examples{
-hhid <- c("a","b","c")
-tid <- c("1","2","3")
-w <- c(1,1,1)
-struc <- projdummies(hhid, tid, w)
+hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
+tid <- c("1","1" ,"1" ,"2","2" ,"3","3","3" ,"4","4","5" ,"5","6","6" ,"6")
+w <- rep(1, 15)
+projdummies(hhid, tid, w)
 }

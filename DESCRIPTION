@@ -14,7 +14,7 @@ Description: Implemented is an algorithm to estimate the two-way fixed effect li
     using the same set of fixed effects at a very low computational cost. 
     Third, the asymptotic variance of the parameters of interest can be 
     consistently estimated using standard routines on the residualized data. 
-License: GPL-2
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -23,5 +23,6 @@ Imports:
 RoxygenNote: 7.1.0
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

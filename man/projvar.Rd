@@ -16,13 +16,14 @@ A vector the same length as var will be returned, with each item corresponding t
 }
 \description{
 \code{projvar} uses the matrices from \code{projdummies} to project a variable.
-In practice, all dependant and indepdent variables must be project for the two way regression
+In practice, all dependent and indepdent variables must be project for the two way regression
 }
 \examples{
-hhid <- c("a","b","c")
-tid <- c("1","2","3")
-w <- c(1,1,1)
-x1 <- c(1,2,3)
+hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
+tid <- c("1","1" ,"1" ,"2","2" ,"3","3","3" ,"4","4","5" ,"5","6","6" ,"6")
+w <- rep(1, 15)
+x1 <- rnorm(15, mean=50, sd=10)   
+
 struc <- projdummies(hhid, tid, w)
-x1_projected <- projvar(x1, struc)
+x1p <- projvar(x1, struc)
 }

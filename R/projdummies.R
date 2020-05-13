@@ -17,10 +17,11 @@
 #'    hhid and tid as factors will always be returned, as well as the original weights w that are passed.
 #'
 #' @examples
-#' hhid <- c("a","b","c")
-#' tid <- c("1","2","3")
-#' w <- c(1,1,1)
-#' struc <- projdummies(hhid, tid, w)
+#' hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
+#' tid <- c("1","1" ,"1" ,"2","2" ,"3","3","3" ,"4","4","5" ,"5","6","6" ,"6")
+#' w <- rep(1, 15)
+#' projdummies(hhid, tid, w)
+#' @export
 
 
 projdummies <- function(hhid, tid, w) {

@@ -14,18 +14,24 @@
 #'
 #'
 #' @examples
-#' hhid <- c("a","b","c")
-#' tid <- c("1","2","3")
-#' w <- c(1,1,1)
-#' x1 <- c(1,2,3)
-#' y <- c(2,4,6)
+#' hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
+#' tid <- c("1","1" ,"1" ,"2","2" ,"3","3","3" ,"4","4","5" ,"5","6","6" ,"6")
+#' w <- rep(1, 15)
+#' x1 <- rnorm(15, mean=50, sd=10)   
+#' x2 <- rnorm(15, mean=50, sd=10)
+#' y <- x1 + rnorm(15, mean=50, sd=10)
+#' 
 #' struc <- projdummies(hhid, tid, w)
-#' x1_projected <- projvar(x1, struc)
-#' y_projected <- projvar(y, struc)
-#' reg <- regress1(y_projected, x1_projected)
-#' matCov <- avar(X, reg$res, struc$hhid, reg$XX)
+#' x1p <- projvar(x1, struc)
+#' x2p <- projvar(x2, struc)
+#' yp <- projvar(y, struc)
+#' 
+#' reg <- regress1(yp, data.frame(x1p,x2p))
+#' matCov <- avar(data.frame(x1p, x2p), reg$res, struc$hhid, reg$XX)
+#' @export
 
 avar <- function(X, e, group=NULL, J=NULL) {
+  X <- Matrix::Matrix(as.matrix(X))
   L <- dim(X)[1]
   L2 <- dim(e)[1]
 
