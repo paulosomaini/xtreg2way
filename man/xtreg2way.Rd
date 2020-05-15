@@ -6,13 +6,14 @@
 \usage{
 xtreg2way(
   y,
-  X,
+  X = NULL,
   iid = NULL,
   tid = NULL,
   w = NULL,
   struc = NULL,
   se = "",
-  noise = NULL
+  noise = NULL,
+  data = NULL
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ se=="11" : Arellano standard errors with a degree of freedom correction performe
 If se is omitted or set to [] then it is set to 1 and the Arellano (1987) estimator is computed.}
 
 \item{noise}{(optional) If noise is set to "1", then results are displayed}
+
+\item{data}{(optional) If the first argument is a formula, you can pass a dataframe here}
 }
 \value{
 betaHat (K-by-1) vector of estimated coefficients
@@ -52,6 +55,13 @@ hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
 tid <- c("1","1" ,"1" ,"2","2" ,"3","3","3" ,"4","4","5" ,"5","6","6" ,"6")
 w <- rep(1, 15)
 x1 <- rnorm(15, mean=50, sd=10)   
+x2 <- rnorm(15, mean=50, sd=10)   
 y <- x1 + rnorm(15, mean=50, sd=10)    
+#The most basic way to use this function
 output <- xtreg2way(y, x1, hhid, tid, w, se="2", noise="1")
+#You can rerun faster with different columns using output$struc
+output2 <- xtreg2way(y, data.frame(x1,x2), struc=output$struc)
+#Or you can use a formula and specify data=
+output3 <- xtreg2way(y~x1+x2, iid=hhid, tid=tid, w=w, se="2", noise="1",
+                    data=data.frame(x1,x2,y))
 }

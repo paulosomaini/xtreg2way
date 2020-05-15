@@ -1,5 +1,6 @@
 ---
 title: "Two-Way-Fixed-Effect-Model"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Two-Way-Fixed-Effect-Model}
