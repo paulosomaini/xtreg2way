@@ -4,12 +4,17 @@
 #' Estimation of Two Way Fixed Effects Model
 #'
 #' \code{xtreg2way} estimates a 2-way fixed effect model absorbing the two set of dummies and reports standard errors.
-#'
-#'
-#' @param y The dependant variable, size N-by-1
-#' @param X The matrix of covariates, size N-by-K
-#' @param iid The group ID, size N-by-1
-#' @param tid The time ID, size N-by-1
+#' @aliases xtreg2way.formula
+#' @aliases xtreg2way.default
+#' 
+#' 
+#' @param y Either a numeric of data, or a formula
+#' @param ... Other parameters, based on method used
+#' @param formula Model specifications
+#' @param data A dataframe with labels from the formula \code{y}
+#' @param X A matrix of data
+#' @param iid (optional) The group ID, size N-by-1 - not needed if \code{struc} is provided
+#' @param tid (optional) The time ID, size N-by-1 - not needed if \code{struc} is provided
 #' @param w (optional) The vector of weights, size N-by-1.  If omitted, w will be set to 1 for all observations
 #' @param struc (optional) This list contains the results from the first step of the algorithm.  To save computational time, you can rerun the algorithm on different columns by providing this struc.
 #' @param se (optional) This indicates standard error estimate to be calulcated.  Possible values include:
@@ -19,12 +24,15 @@
 #'        se=="11" : Arellano standard errors with a degree of freedom correction performed by Stata xtreg, fe.
 #'        If se is omitted or set to [] then it is set to 1 and the Arellano (1987) estimator is computed.
 #' @param noise (optional) If noise is set to "1", then results are displayed
-#' @param data (optional) If the first argument is a formula, you can pass a dataframe here
-#' @return betaHat (K-by-1) vector of estimated coefficients
-#' aVarHat (K-by-K) estimate of the matrix of variances and covariance of  the estimator.
-#' yp (N-by-1) the residual of the projection of y on the two sets of  dummies.
-#' Xp (N-by-K) the residual of the projection of each column of X on the two  sets of dummies.
-#' struc (structure) results of the first step of the algorithm.
+#' @return \code{betaHat} (K-by-1) vector of estimated coefficients
+#' 
+#' \code{aVarHat} (K-by-K) estimate of the matrix of variances and covariance of  the estimator.
+#' 
+#' \code{y} (N-by-1) the residual of the projection of y on the two sets of  dummies.
+#' 
+#' \code{X} (N-by-K) the residual of the projection of each column of X on the two  sets of dummies.
+#' 
+#' \code{struc} (list) results of the first step of the algorithm.
 
 #'
 #'
@@ -40,13 +48,47 @@
 #' #You can rerun faster with different columns using output$struc
 #' output2 <- xtreg2way(y, data.frame(x1,x2), struc=output$struc)
 #' #Or you can use a formula and specify data=
-#' output3 <- xtreg2way(y~x1+x2, iid=hhid, tid=tid, w=w, se="2", noise="1",
-#'                     data=data.frame(x1,x2,y))
+#' output3 <- xtreg2way(y~x1+x2, data=data.frame(x1,x2,y), iid=hhid, tid=tid, w=w, 
+#'                      se="2", noise="1")
+#'            
 #' @export
 
+xtreg2way <- function(y, ...){
+  UseMethod("xtreg2way",y)
+}
 
-xtreg2way <- function(y, X=NULL, iid = NULL, tid = NULL, w = NULL, 
-                      struc = NULL, se = "", noise = NULL, data = NULL) {
+#' @describeIn xtreg2way This function ingests a formula as the first argument,
+#'  and requires \code{data} as a data.frame
+#' @export
+xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL, 
+                              struc = NULL, se = "", noise = NULL, ...) {
+  # This function inputs a formula
+  # and creates variables compatable with xtreg2way.default
+  #Check to see if labels exist
+  for (label in attr(stats::terms(formula),"term.labels")) {
+    if (!label %in% labels(data)[[2]]){
+      stop(paste("Missing Variable:",
+                 label,"is not in data", sep=" "))
+    }
+  }
+  #Build X
+  X <- data[attr(stats::terms(formula),"term.labels")]
+  
+  #Make sure only 1 y variable exists
+  y_label <- setdiff(all.vars(formula) , attr(stats::terms(formula),"term.labels"))
+  if( length(y_label) > 1) {
+    stop(paste("Multiple independent variables in formula",
+               y_label, sep=" "))
+  }
+  y <- as.matrix(data[y_label])
+  
+  xtreg2way.default(y, X, iid, tid, w, struc, se, noise)
+}
+
+#' @describeIn xtreg2way Default Method
+#' @export
+xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL, 
+                             struc = NULL, se = "", noise = NULL,...) {
   #This variable is needed for the return at the bottom
   struc_is_null <- is.null(struc)
   #If struc is passed, grab iid tid and w from it
@@ -55,37 +97,8 @@ xtreg2way <- function(y, X=NULL, iid = NULL, tid = NULL, w = NULL,
     tid <- struc$tid
     w <- struc$w
   }
-  #If a formula is passed, grab all necessary variables
-  if( class(y) == "formula") {
-    
-    #These variables should be passed explicitly or via struc by now
-    if (is.null(iid) | is.null(tid)) {
-      stop(paste("Arguments Missing:",
-                 "If the first argument is a formula,",
-                 "then iid and tid are required arguments"), sep = " ")
-    }
-    
-    #Check to see if labels exist
-    for (label in attr(stats::terms(y),"term.labels")) {
-      if (!label %in% labels(data)[[2]]){
-        stop(paste("Missing Variable:",
-                   label,"is not in data", sep=" "))
-      }
-    }
-    #Build X
-    X <- data[attr(stats::terms(y),"term.labels")]
-    
-    #Make sure only 1 y variable exists
-    y_label <- setdiff(all.vars(y) , attr(stats::terms(y),"term.labels"))
-    if( length(y_label) > 1) {
-      stop(paste("Multiple independent variables in formula",
-                 y_label, sep=" "))
-    }
-    y <- data[y_label]
-  }
   
   X <- as.matrix(X)
-  y <- as.matrix(y)
   obs <- dim(X)[1]
   K <- dim(X)[2]
 
@@ -190,3 +203,4 @@ xtreg2way <- function(y, X=NULL, iid = NULL, tid = NULL, w = NULL,
   }
   return(return_list)
 }
+
