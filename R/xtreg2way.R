@@ -9,7 +9,6 @@
 #' 
 #' 
 #' @param y Either a numeric of data, or a formula
-#' @param ... Other parameters, based on method used
 #' @param formula Model specifications
 #' @param data A dataframe with labels from the formula \code{y}
 #' @param X A matrix of data
@@ -24,6 +23,7 @@
 #'        se=="11" : Arellano standard errors with a degree of freedom correction performed by Stata xtreg, fe.
 #'        If se is omitted or set to [] then it is set to 1 and the Arellano (1987) estimator is computed.
 #' @param noise (optional) If noise is set to "1", then results are displayed
+#' @param ... Other parameters, based on method used
 #' @return \code{betaHat} (K-by-1) vector of estimated coefficients
 #' 
 #' \code{aVarHat} (K-by-K) estimate of the matrix of variances and covariance of  the estimator.

@@ -4,8 +4,8 @@ Title: Feasible Estimation of Robust Standard Errors in the Two-Way Fixed Effect
 Version: 1.0.0
 Authors@R: c(
     person("Brian", "Chivers", email = "bchivers@stanford.edu", role = "aut"),
-    person("Paulo", "Somaini", email = "soma@stanford.edu", role = c("aut","cre"))
-    person("Frank", "Wolak", email= "wolak@stanford.edu", role=c("aut","cre"))
+    person("Paulo", "Somaini", email = "soma@stanford.edu", role = c("aut","cre")),
+    person("Frank", "Wolak", email= "wolak@stanford.edu", role=c("aut")))
 Author: Brian Chivers <bchivers@stanford.edu>
         Paulo Somaini <soma@stanford.edu>
         Frank A Wolak <wolak@stanford.edu>
