@@ -29,15 +29,15 @@ Finally, instead of passing your variables explicitly as `y` and `X`, you can pa
 
 ## Whats in this repo?
 
-* R
- * This folder contains all R code for the `xtreg2way` function, as well as helper functions
-* man
- * This folder contains function documentation.
- * This documentation is automatically built using `roxygen2`. To edit the documentation:
-  * Edit the documentation in each function's R/... file
-  * Run `devtools::document()` from an R console
-  * Save and push this updated documentation
-* tests
- * This folder currently contains a single test, under tests/testthat/test_xtreg2way.R
-* vignettes
- * This folder contains a single vignette, which is an RMarkdown file containing example code.
+* R/
+    * This folder contains all R code for the `xtreg2way` function, as well as helper functions
+* man/
+    * This folder contains function documentation.
+    * This documentation is automatically built using `roxygen2`. To edit the documentation:
+        * Edit the documentation in each function's R/... file
+        * Run `devtools::document()` from an R console
+        * Save and push this updated documentation
+* tests/
+     * This folder currently contains a single test, under tests/testthat/test_xtreg2way.R
+* vignettes/
+     * This folder contains a single vignette, which is an RMarkdown file containing example code.
