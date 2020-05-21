@@ -82,6 +82,28 @@ xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL,
   }
   y <- as.matrix(data[y_label])
   
+  if(is.character(iid) & length(iid) == 1) {
+    if(iid %in% colnames(data)) {
+      iid <- data[iid]
+    } else {
+      stop("If iid is a string, it needs to be a column in data")
+    }
+  }
+  if(is.character(tid) & length(tid) == 1) {
+    if(tid %in% colnames(data)){
+      tid <- data[tid]
+    } else {
+      stop("If tid is a string, it needs to be a column in data")
+    }
+  }
+  if(is.character(w) & length(w) == 1) {
+    if(w %in% colnames(data)){
+      w <- data[w]
+    } else {
+      stop("If w is a string, it needs to be a column in data")
+    }
+  }
+  
   xtreg2way.default(y, X, iid, tid, w, struc, se, noise)
 }
 
