@@ -210,6 +210,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     df <- data.frame(coefficients = as.numeric(betaHat), se = std,
                      tstat = Matrix::t(betaHat) / std,
                      pval = (1 - stats::pnorm(abs(t(betaHat) / std), 0, 1)) / 2)
+    colnames(df) <- c("coefficients","se","tstat","pval")
     print(df)
   }
 
