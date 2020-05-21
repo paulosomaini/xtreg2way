@@ -27,6 +27,27 @@ Finally, instead of passing your variables explicitly as `y` and `X`, you can pa
 
 `output3 <- xtreg2way(y~x1+x2, myDataFrame, iid, tid)`
 
+## Computing standard errors
+
+You can control the standard error computation using the option `se`.
+
+`output3 <- xtreg2way(..., se ="0")`
+
+computes standard errors assuming homoscedasticity and no within  group correlation or serial correlation.
+
+`output3 <- xtreg2way(..., se ="1")`
+
+produces the standard errors robust to heteroscedasticity and serial correlation proposed by Arellano (1987).
+
+`output3 <- xtreg2way(..., se ="11")`
+
+adds the degree of freedom correction performed by Stata xtreg, fe. If `se` is omitted,
+then it is set to `"1"` and the Arellano (1987) estimator is computed.  
+
+`output3 <- xtreg2way(..., se ="2")`
+
+generates errors robust to heteroscedasticity but assumes no correlation within group or serial correlation, i.e., the "robust" estimator in Stata.
+
 ## Whats in this repo?
 
 * R/
@@ -41,3 +62,11 @@ Finally, instead of passing your variables explicitly as `y` and `X`, you can pa
      * This folder currently contains a single test, under tests/testthat/test_xtreg2way.R
 * vignettes/
      * This folder contains a single vignette, which is an RMarkdown file containing example code.
+
+
+## References
+
+Arellano, M. (1987), Computing Robust Standard Errors for Within-Groups Estimators, Oxford Bulletin of Economics and
+Statistics, 49, issue 4, p. 431–434. 
+
+Somaini, Paulo and A., Wolak Frank, (2016), An Algorithm to Estimate the Two-Way Fixed Effects Model, Journal of Econometric Methods, 5, issue 1, p. 143-152.
