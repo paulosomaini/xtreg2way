@@ -157,7 +157,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     T <- nlevels(struc$tid)
     sig2hat <- (Matrix::t(reg$res) %*% reg$res) /
       (sum(struc$w > 0) - N - T + 1 - length(reg$beta))
-    aVarHat <- sqrt(diag(as.numeric(sig2hat) * Matrix::solve(reg$XX)))
+    aVarHat <- sqrt(diag(as.numeric(sig2hat) * MASS::ginv(reg$XX)))
   #SE=='1'
   #standard errors proposed by Arellano (1987) robust to
   #heteroscedasticity and serial correlation

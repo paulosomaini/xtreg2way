@@ -64,7 +64,7 @@ projdummies <- function(hhid, tid, w) {
 
 
   if (N < T) {
-      A <- Matrix::solve(diag(DD) - DH %*% invHH %*% Matrix::t(DH))
+      A <- MASS::ginv(as.matrix(diag(DD) - DH %*% invHH %*% Matrix::t(DH)))
       invHHDH <- invHH %*% Matrix::t(DH)
       B <- -A %*% DH %*% invHH
 
@@ -73,7 +73,7 @@ projdummies <- function(hhid, tid, w) {
       return_list$invHH <- invHH
       return_list$B <- B
     } else {
-      C <- Matrix::solve(diag(HH) - (Matrix::t(DH) %*% invDD %*% DH), sparse = TRUE)
+      C <- MASS::ginv(as.matrix(diag(HH) - (Matrix::t(DH) %*% invDD %*% DH)))
       invDDDH <- invDD %*% DH
       B <-  -invDD %*% DH %*% C
 
