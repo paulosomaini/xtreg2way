@@ -28,8 +28,8 @@ test_that("Output Run 1 is correct", {
   expect_equal(output$betaHat, matrix(data = c(0.8793373,0.5381357), 
                                       nrow=1, ncol=2),
                tolerance = test_tolerance)
-  expect_equal(output$aVarHat, matrix(data=c(0.0420780855,0.0005067944,
-                                             0.0005067944,0.0336658460), 
+  expect_equal(output$aVarHat, matrix(data=c(0.157792821,0.001900479,
+                                             0.001900479,0.126246922), 
                                       nrow=2, ncol=2),
                tolerance = test_tolerance)
 })

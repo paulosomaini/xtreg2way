@@ -37,6 +37,9 @@ projdummies <- function(hhid, tid, w) {
   if (length(hhid) != length(tid) | length(hhid) != length(w)) {
     stop("Lengths of hhid, tid, and w must be equal")
   }
+  if (any(w<0)) {
+    stop("All weights must be positive")
+  }
   ######################
   hhid_fac <- as.factor(hhid)
   tid_fac <- as.factor(tid)

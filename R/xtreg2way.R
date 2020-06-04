@@ -135,6 +135,23 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
           "y must be a vector of length N,",
           "and X must be a N by K matrix"), sep = " ")
   }
+  
+  
+  ##Redundant Check
+  redundant <- xtreg2way::nonredundant(iid, tid, w)
+  nr <- redundant$nr
+  if (redundant$flag) {
+    esample <- (iid %in% nr$iid) & (tid %in% nr$tid)
+    y <- y[esample]
+    X <- X[esample,]
+    iid <- iid[esample]
+    tid <- tid[esample]
+    w <- w[esample]
+    
+    X <- as.matrix(X)
+    obs <- dim(X)[1]
+    K <- dim(X)[2]
+  }
 
   #If struc isn't provided
   if (is.null(struc)) {
@@ -151,12 +168,18 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     }
     #Build struc
     struc <- projdummies(iid, tid, w)
+    
+    if (redundant$flag) {
+      struc$esample <- esample
+    }
 
     #Project variables
     for (col_id in 1:K) {
-      X[, col_id] <- projvar(X[, col_id], struc)
+      projvar_list <- projvar(X[, col_id], struc)
+      X[, col_id] <- projvar_list$var
     }
-    y <- projvar(y, struc)
+    projvar_list <- projvar(y, struc)
+    y <- projvar_list$var
 
   } else {
     #Else, if struc is provided, check length of hhid and tid
@@ -170,7 +193,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   #Perform regression on projected variables
   reg <- regress1(y, X)
   betaHat <- Matrix::t(reg$beta)
-
+  dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta))
   #SE == '0' for standard errors
   #assuming homoscedasticity and no within group correlation
   #or serial correlation
@@ -184,12 +207,12 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   #standard errors proposed by Arellano (1987) robust to
   #heteroscedasticity and serial correlation
   } else if (se == "1") {
-    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX)
+    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX) * dof
   #SE == 2
   #it computes standard errors robust to heteroscedasticity,
   #but assumes no correlation within group or serial correlation.
   } else if (se == "2") {
-    aVarHat <- avar(X, reg$res, as.factor(1:obs), reg$XX)
+    aVarHat <- avar(X, reg$res, as.factor(1:obs), reg$XX) * dof
   #SE == 11
   #Arellano (1987) standard errors with a degree of freedom
   #correction performed by Stata xtreg, fe

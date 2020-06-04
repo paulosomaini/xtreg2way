@@ -9,7 +9,9 @@
 #'
 #' @param var A vector of a single variable
 #' @param struc The output of \code{projdummies}, containing matrices necessary to project
-#' @return A vector the same length as var will be returned, with each item corresponding to a projected value from var
+#' @return A list will be returned with the following named values:
+#'         var - the projected variable
+#'         delta, tau - intermediate variables
 #'
 #'
 #' @examples
@@ -31,6 +33,12 @@ projvar <- function(var, struc) {
     if (any(is.nan(var))) {
       stop("NAN values in w not supported")
     }
+  
+    if ("esample" %in% names(struc) ) {
+      if (length(var) == length(struc$esample)) {
+        var <- var[struc$esample]
+      }
+    } 
     N <- nlevels(struc$hhid)
     T <- nlevels(struc$tid)
     if (N < T) {
@@ -69,6 +77,11 @@ projvar <- function(var, struc) {
 
     delta <- as.numeric(delta)
     tau <- as.numeric(tau)
+    
+    return_list <- list()
+    return_list$delta <- delta
+    return_list$tau <- tau
+    return_list$var <- (var - delta[c(struc$hhid)] - tau[c(struc$tid)]) * sqrt(struc$w)
 
-    return((var - delta[c(struc$hhid)] - tau[c(struc$tid)]) * sqrt(struc$w))
+    return(return_list)
 }

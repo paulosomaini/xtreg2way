@@ -22,9 +22,12 @@
 #' y <- x1 + rnorm(15, mean=50, sd=10)
 #' 
 #' struc <- projdummies(hhid, tid, w)
-#' x1p <- projvar(x1, struc)
-#' x2p <- projvar(x2, struc)
-#' yp <- projvar(y, struc)
+#' projvar_list <- projvar(x1, struc)
+#' x1p <- projvar_list$var
+#' projvar_list <- projvar(x2, struc)
+#' x2p <- projvar_list$var
+#' projvar_list <- projvar(y, struc)
+#' yp <- projvar_list$var
 #' 
 #' reg <- regress1(yp, data.frame(x1p,x2p))
 #' matCov <- avar(data.frame(x1p, x2p), reg$res, struc$hhid, reg$XX)

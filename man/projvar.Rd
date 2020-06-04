@@ -12,7 +12,9 @@ projvar(var, struc)
 \item{struc}{The output of \code{projdummies}, containing matrices necessary to project}
 }
 \value{
-A vector the same length as var will be returned, with each item corresponding to a projected value from var
+A list will be returned with the following named values:
+        var - the projected variable
+        delta, tau - intermediate variables
 }
 \description{
 \code{projvar} uses the matrices from \code{projdummies} to project a variable.
