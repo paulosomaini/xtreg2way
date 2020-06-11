@@ -41,12 +41,13 @@ produces the standard errors robust to heteroscedasticity and serial correlation
 
 `output3 <- xtreg2way(..., se ="11")`
 
-adds the degree of freedom correction performed by Stata xtreg, fe. If `se` is omitted,
-then it is set to `"1"` and the Arellano (1987) estimator is computed.  
+adds the degree of freedom correction performed by Stata xtreg, fe. 
 
 `output3 <- xtreg2way(..., se ="2")`
 
 generates errors robust to heteroscedasticity but assumes no correlation within group or serial correlation, i.e., the "robust" estimator in Stata.
+
+If `se` is omitted, then it is set to `"1"` and the Arellano (1987) estimator is computed.  
 
 ## Whats in this repo?
 
@@ -69,4 +70,4 @@ generates errors robust to heteroscedasticity but assumes no correlation within 
 Arellano, M. (1987), Computing Robust Standard Errors for Within-Groups Estimators, Oxford Bulletin of Economics and
 Statistics, 49, issue 4, p. 431–434. 
 
-Somaini, Paulo and A., Wolak Frank, (2016), An Algorithm to Estimate the Two-Way Fixed Effects Model, Journal of Econometric Methods, 5, issue 1, p. 143-152.
+Somaini, P. and F.A. Wolak, (2016), An Algorithm to Estimate the Two-Way Fixed Effects Model, Journal of Econometric Methods, 5, issue 1, p. 143-152.
