@@ -64,6 +64,10 @@ If `se` is omitted, then it is set to `"1"` and the Arellano (1987) estimator is
 * vignettes/
      * This folder contains a single vignette, which is an RMarkdown file containing example code.
 
+## Manual Installation
+
+Download this repository and extract it. From the directory where this README.MD file is located type ` devtools::install()` in the R console.
+After the installation is complete, load the library typing `library(xtreg2way)`.
 
 ## References
 
