@@ -173,14 +173,6 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
       struc$esample <- esample
     }
 
-    #Project variables
-    for (col_id in 1:K) {
-      projvar_list <- projvar(X[, col_id], struc)
-      X[, col_id] <- projvar_list$var
-    }
-    projvar_list <- projvar(y, struc)
-    y <- projvar_list$var
-
   } else {
     #Else, if struc is provided, check length of hhid and tid
     if (length(struc$hhid) != obs | length(struc$tid) != obs) {
@@ -189,7 +181,15 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
             "matching the length of y and rows of X"), sep = " ")
     }
   }
-
+  
+  #Project variables
+  for (col_id in 1:K) {
+    projvar_list <- projvar(X[, col_id], struc)
+    X[, col_id] <- projvar_list$var
+  }
+  projvar_list <- projvar(y, struc)
+  y <- projvar_list$var
+  
   #Perform regression on projected variables
   reg <- regress1(y, X)
   betaHat <- Matrix::t(reg$beta)
@@ -224,11 +224,11 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   #ELSE
   #Arellano (1987) estimator is computed
   } else {
-    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX)
+    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX) * dof
   }
 
   #Build the noise DF and print it
-  if (!is.null(noise)) {
+  if (noise!="1") {
     std <- sqrt(diag(aVarHat))
     df <- data.frame(coefficients = as.numeric(betaHat), se = std,
                      tstat = Matrix::t(betaHat) / std,

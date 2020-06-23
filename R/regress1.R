@@ -37,7 +37,7 @@ regress1 <- function(y, X) {
   res <- y - X %*% beta
 
   return_list <- list()
-  return_list$XX <- XX
+  return_list$XX <- as.matrix(XX)
   return_list$beta <- beta
   return_list$res <- res
   return(return_list)
