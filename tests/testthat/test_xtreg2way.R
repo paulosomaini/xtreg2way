@@ -34,8 +34,8 @@ test_that("Output Run 1 is correct", {
                tolerance = test_tolerance)
 })
 test_that("Output Run 2 is correct", {
-  expect_equal(output2$betaHat, as.matrix(2.086334),
+  expect_equal(output2$betaHat, as.matrix(0.846333),
                tolerance = test_tolerance)
-  expect_equal(output2$aVarHat, as.matrix(0.002414187),
+  expect_equal(output2$aVarHat, as.matrix(0.185101),
                tolerance = test_tolerance)
 })

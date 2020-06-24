@@ -16,7 +16,7 @@ xtreg2way(y, ...)
   w = NULL,
   struc = NULL,
   se = "",
-  noise = NULL,
+  noise = "",
   ...
 )
 
@@ -28,7 +28,7 @@ xtreg2way(y, ...)
   w = NULL,
   struc = NULL,
   se = "",
-  noise = NULL,
+  noise = "",
   ...
 )
 }

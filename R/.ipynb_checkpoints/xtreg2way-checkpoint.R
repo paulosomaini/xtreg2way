@@ -61,7 +61,7 @@ xtreg2way <- function(y, ...){
 #'  and requires \code{data} as a data.frame
 #' @export
 xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL, 
-                              struc = NULL, se = "", noise = "", ...) {
+                              struc = NULL, se = "", noise = NULL, ...) {
   # This function inputs a formula
   # and creates variables compatable with xtreg2way.default
   #Check to see if labels exist
@@ -110,7 +110,7 @@ xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL,
 #' @describeIn xtreg2way Default Method
 #' @export
 xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL, 
-                             struc = NULL, se = "", noise = "",...) {
+                             struc = NULL, se = "", noise = NULL,...) {
   #This variable is needed for the return at the bottom
   struc_is_null <- is.null(struc)
   #If struc is passed, grab iid tid and w from it
@@ -202,7 +202,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     T <- nlevels(struc$tid)
     sig2hat <- (Matrix::t(reg$res) %*% reg$res) /
       (sum(struc$w > 0) - N - T + 1 - length(reg$beta))
-    aVarHat <- (as.numeric(sig2hat) * MASS::ginv(as.matrix(reg$XX)))
+    aVarHat <- sqrt(diag(as.numeric(sig2hat) * MASS::ginv(reg$XX)))
   #SE=='1'
   #standard errors proposed by Arellano (1987) robust to
   #heteroscedasticity and serial correlation
@@ -228,7 +228,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   }
 
   #Build the noise DF and print it
-  if (noise=="1") {
+  if (noise!="1") {
     std <- sqrt(diag(aVarHat))
     df <- data.frame(coefficients = as.numeric(betaHat), se = std,
                      tstat = Matrix::t(betaHat) / std,
