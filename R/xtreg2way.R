@@ -104,6 +104,18 @@ xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL,
     }
   }
   
+  #NA Checks for X,y
+  #The checks for iid, tid, and w are in xtreg2way.default
+  if(any(is.na(y))) {
+    stop(paste("Error: NA values in the y argument (",
+               y_label,")",sep=" "))
+  }
+  if(any(is.na(X))) {
+    stop(paste("Error: NA values in the X argument (",
+               attr(stats::terms(formula),"term.labels"),")",sep=" "))
+  }
+  
+  
   xtreg2way.default(y, X, iid, tid, w, struc, se, noise)
 }
 
@@ -127,6 +139,24 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   #If w is null, fill with ones
   if (is.null(w)) {
     w <- rep(1, obs)
+  }
+  
+  #NA Checks for X,y, iid, tid, and w
+  if(any(is.na(y))) {
+    stop("Error: NA values in the y argument")
+  }
+  
+  if(any(is.na(X))) {
+    stop("Error: NA values in the X argument")
+  }
+  if(any(is.na(iid))) {
+    stop("Error: NA values in the iid argument")
+  }
+  if(any(is.na(tid))) {
+    stop("Error: NA values in the tid argument")
+  }
+  if(any(is.na(w))) {
+    stop("Error: NA values in the w argument")
   }
 
   #checking y and X dimensions
