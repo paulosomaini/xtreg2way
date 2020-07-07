@@ -266,6 +266,8 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     colnames(df) <- c("coefficients","se","tstat","pval")
     print(df)
   }
+  
+  
 
   #Return all that is needed
   return_list <- list()
@@ -277,6 +279,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     return_list$X <- X
     return_list$struc <- struc
   }
+  class(return_list) <- "xtreg2way"
   return(return_list)
 }
 
