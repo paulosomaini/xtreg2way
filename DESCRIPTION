@@ -3,13 +3,9 @@ Type: Package
 Title: Feasible Estimation of Robust Standard Errors in the Two-Way Fixed Effect Model
 Version: 1.0.0
 Authors@R: c(
-    person("Brian", "Chivers", email = "bchivers@stanford.edu", role = "aut"),
     person("Paulo", "Somaini", email = "soma@stanford.edu", role = c("aut","cre")),
-    person("Frank", "Wolak", email= "wolak@stanford.edu", role=c("aut")))
-Author: Brian Chivers <bchivers@stanford.edu>
-        Paulo Somaini <soma@stanford.edu>
-        Frank A Wolak <wolak@stanford.edu>
-Maintainer: Paulo Somaini <soma@stanford.edu>
+    person("Frank", "Wolak", email= "wolak@stanford.edu", role=c("aut")),
+    person("Brian", "Chivers", email = "bchivers@stanford.edu", role = c("aut")))
 Description: Implemented is an algorithm to estimate the two-way fixed effect linear model. 
     The coefficients of interest are computed using the residuals from the 
     projection of all variables on the two sets of fixed effects. Our algorithm
@@ -19,7 +15,7 @@ Description: Implemented is an algorithm to estimate the two-way fixed effect li
     using the same set of fixed effects at a very low computational cost. 
     Third, the asymptotic variance of the parameters of interest can be 
     consistently estimated using standard routines on the residualized data. 
-License: file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
