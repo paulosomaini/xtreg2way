@@ -39,19 +39,19 @@ w <- pracma::rand(n = numgroups, m = 1)
 w <- w[hhid]
 ```
 
-Now each observation has a group, time factor, and weight.  Next, we will generate two random `x` values as our independant variables, based on these effects.  
+Now each observation has a group, time factor, and weight.  Next, we will generate two random `x` values as our independent variables, based on these effects.  
 ```{r}
 #Randomly create effects for groups
 heffect <- pracma::randn(n = numgroups, m = 1)
 teffect <- pracma::randn(n = T, m = 1)
-#Generate independant variables 
+#Generate independent variables 
 x1 <- pracma::randn(n = observations, m = 1) + 
   0.5 * heffect[hhid] + 0.25 * teffect[tid]
 x2 <- pracma::randn(n = observations, m = 1) - 
   0.25 * heffect[hhid] + 0.5 * teffect[tid]
 ```
 
-Finally, we will generate a random error term, and then create our `y` dependant variable from the variables created.
+Finally, we will generate a random error term, and then create our `y` dependent variable from the variables created.
 ```{r}
 #Generate Random Error
 autoc <- pracma::rand(n = numgroups, m = 1)
@@ -65,7 +65,7 @@ for (o in 1:observations) {
   }
   u[o] <- autoc[hhid[o]] * u_1 + u[o]
 }
-# Generate dependant variable
+# Generate dependent variable
 y <- 1 + x1 - x2 + heffect[hhid] + teffect[tid] + u
 ```
 
@@ -79,7 +79,7 @@ Using the `noise="1"` parameter, we can see the regression coefficients for `x1`
 `betaHat`  is a vector of the regression coefficients.
 `aVarHat` is the asymptotic variance of the estimator
 `y` and `X` are the input variables projected onto the two-way dummy matrices.
-`struc` contains several matrices necessary to perform this regression again on different independant variables, for the same set of observations.
+`struc` contains several matrices necessary to perform this regression again on different independent variables, for the same set of observations.
 
 
 The second way to use `xtreg2way` is to use the `struc` object from the first run, but now on a different set of columns.  Below, we see the same process but only using `x1` now.

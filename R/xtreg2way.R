@@ -16,7 +16,7 @@
 #' @param tid (optional) The time ID, size N-by-1 - not needed if \code{struc} is provided
 #' @param w (optional) The vector of weights, size N-by-1.  If omitted, w will be set to 1 for all observations
 #' @param struc (optional) This list contains the results from the first step of the algorithm.  To save computational time, you can rerun the algorithm on different columns by providing this struc.
-#' @param se (optional) This indicates standard error estimate to be calulcated.  Possible values include:
+#' @param se (optional) This indicates standard error estimate to be calculcated.  Possible values include:
 #'        se=="0" : standard errors assuming homoscedasticity and no within  group correlation or serial correlation.
 #'        se=="1" : standard errors  proposed by Arellano (1987) robust to heteroscedasticity and serial correlation.
 #'        se=="2" : standard errors robust to heteroscedasticity but assumes no correlation within group or serial correlation.
