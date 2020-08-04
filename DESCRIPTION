@@ -16,7 +16,7 @@ Description: Implemented is an algorithm to estimate the two-way fixed effect li
     Third, the asymptotic variance of the parameters of interest can be 
     consistently estimated using standard routines on the residualized data. 
     Somaini P., Wolak F. A. (2016) <doi:https://doi.org/10.1515/jem-2014-0008>
-    Arellano, M. (1987) <https://ideas.repec.org/a/bla/obuest/v49y1987i4p431-34.html>
+    Arellano, M. (1987) <https://ideas.repec.org/a/bla/obuest/v49y1987i4p431-34.html>.
 License: MIT + file LICENSE
 URL: https://github.com/paulosomaini/xtreg2way
 Encoding: UTF-8
