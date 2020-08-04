@@ -1,6 +1,6 @@
 Package: xtreg2way
 Type: Package
-Title: Feasible Estimation of Robust Standard Errors in the Two-Way Fixed Effect Model
+Title: Feasible Estimation of the Two-Way Fixed Effect Model
 Version: 1.0.0
 Authors@R: c(
     person("Paulo", "Somaini", email = "soma@stanford.edu", role = c("aut", "cre","cph")),
@@ -15,6 +15,8 @@ Description: Implemented is an algorithm to estimate the two-way fixed effect li
     using the same set of fixed effects at a very low computational cost. 
     Third, the asymptotic variance of the parameters of interest can be 
     consistently estimated using standard routines on the residualized data. 
+    Somaini P., Wolak F. A. (2016) <doi:https://doi.org/10.1515/jem-2014-0008>
+    Arellano, M. (1987) <https://ideas.repec.org/a/bla/obuest/v49y1987i4p431-34.html>
 License: MIT + file LICENSE
 URL: https://github.com/paulosomaini/xtreg2way
 Encoding: UTF-8
