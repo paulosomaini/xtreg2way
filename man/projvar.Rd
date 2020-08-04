@@ -18,7 +18,7 @@ A list will be returned with the following named values:
 }
 \description{
 \code{projvar} uses the matrices from \code{projdummies} to project a variable.
-In practice, all dependent and indepdent variables must be project for the two way regression
+In practice, all dependent and independent variables must be project for the two way regression
 }
 \examples{
 hhid <- c("a","b","c","a","b","c" ,"a","b","c" ,"a","b","c" ,"a","b","c")
