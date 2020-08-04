@@ -3,7 +3,7 @@ Type: Package
 Title: Feasible Estimation of Robust Standard Errors in the Two-Way Fixed Effect Model
 Version: 1.0.0
 Authors@R: c(
-    person("Paulo", "Somaini", email = "soma@stanford.edu", role = c("aut", "cre")),
+    person("Paulo", "Somaini", email = "soma@stanford.edu", role = c("aut", "cre","cph")),
     person("Frank", "Wolak", email= "wolak@stanford.edu", role=c("aut")),
     person("Brian", "Chivers", email = "bchivers@stanford.edu", role = c("aut")))
 Description: Implemented is an algorithm to estimate the two-way fixed effect linear model. 
@@ -16,6 +16,7 @@ Description: Implemented is an algorithm to estimate the two-way fixed effect li
     Third, the asymptotic variance of the parameters of interest can be 
     consistently estimated using standard routines on the residualized data. 
 License: MIT + file LICENSE
+URL: https://github.com/paulosomaini/xtreg2way
 Encoding: UTF-8
 LazyData: true
 Imports:
