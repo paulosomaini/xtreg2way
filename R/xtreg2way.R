@@ -223,7 +223,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   #Perform regression on projected variables
   reg <- regress1(y, X)
   betaHat <- Matrix::t(reg$beta)
-  dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta))
+  dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta)+length(struc$correction_rank))
   #SE == '0' for standard errors
   #assuming homoscedasticity and no within group correlation
   #or serial correlation
@@ -231,7 +231,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     N <- nlevels(struc$hhid)
     T <- nlevels(struc$tid)
     sig2hat <- (Matrix::t(reg$res) %*% reg$res) /
-      (sum(struc$w > 0) - N - T + 1 - length(reg$beta))
+      (sum(struc$w > 0) - N - T + 1 - length(reg$beta)+struc$correction_rank)
     aVarHat <- (as.numeric(sig2hat) * MASS::ginv(as.matrix(reg$XX)))
   #SE=='1'
   #standard errors proposed by Arellano (1987) robust to
