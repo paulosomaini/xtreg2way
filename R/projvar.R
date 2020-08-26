@@ -25,63 +25,63 @@
 #' @export
 
 projvar <- function(var, struc) {
-    ## NAN and INF check for w
-    # end function if so
-    if (any(is.infinite(var))) {
-      stop("Infinite values in w not supported")
-    }
-    if (any(is.nan(var))) {
-      stop("NAN values in w not supported")
-    }
+  ## NAN and INF check for w
+  # end function if so
+  if (any(is.infinite(var))) {
+    stop("Infinite values in w not supported")
+  }
+  if (any(is.nan(var))) {
+    stop("NAN values in w not supported")
+  }
   
-    if ("esample" %in% names(struc) ) {
-      if (length(var) == length(struc$esample)) {
-        var <- var[struc$esample]
-      }
-    } 
-    N <- nlevels(struc$hhid)
-    T <- nlevels(struc$tid)
-    if (N < T) {
-      A <- struc$A
-      B <- struc$B
-      invHH <- Matrix::Matrix(struc$invHH, sparse = T)
-      invHHDH <- struc$invHHDH
-    } else{
-      B <- struc$B
-      C <- struc$C
-      invDD <- Matrix::Matrix(struc$invDD, sparse = T)
-      invDDDH <- struc$invDDDH
+  if ("esample" %in% names(struc) ) {
+    if (length(var) == length(struc$esample)) {
+      var <- var[struc$esample]
     }
-
-    aux <- Matrix::sparseMatrix(i = as.numeric(struc$hhid), j = as.numeric(struc$tid),
-                        x = as.numeric(var * struc$w), dims = list(N, T))
-
-    Dy <- Matrix::rowSums(aux)
-    Ty <- Matrix::colSums(aux)
-    Ty <- Ty[1:(length(Ty)-1)]
-    if (N < T) {
-
-      delta <- A %*% Dy + B %*% Ty;
-      tau <- Matrix::crossprod(B, Dy) +
-             invHH %*% Ty +
-             invHHDH %*% A %*% Matrix::crossprod(invHHDH, Ty)
-      tau <- rbind(tau, 0)
-    } else {
-      delta <- invDD %*% Dy +
-               invDDDH %*% C %*% Matrix::crossprod(invDDDH, Dy) +
-               B %*% Ty
-      tau <- Matrix::crossprod(B, Dy) + C %*% Ty
-      tau <- rbind(tau, 0)
-
-    }
-
-    delta <- as.numeric(delta)
-    tau <- as.numeric(tau)
+  } 
+  N <- nlevels(struc$hhid)
+  T <- nlevels(struc$tid)
+  if (N < T) {
+    A <- struc$A
+    B <- struc$B
+    invHH <- Matrix::Matrix(struc$invHH, sparse = T)
+    invHHDH <- struc$invHHDH
+  } else{
+    B <- struc$B
+    C <- struc$C
+    invDD <- Matrix::Matrix(struc$invDD, sparse = T)
+    invDDDH <- struc$invDDDH
+  }
+  
+  aux <- Matrix::sparseMatrix(i = as.numeric(struc$hhid), j = as.numeric(struc$tid),
+                              x = as.numeric(var * struc$w), dims = list(N, T))
+  
+  Dy <- Matrix::rowSums(aux)
+  Ty <- Matrix::colSums(aux)
+  Ty <- Ty[1:(length(Ty)-1)]
+  if (N < T) {
     
-    return_list <- list()
-    return_list$delta <- delta
-    return_list$tau <- tau
-    return_list$var <- (var - delta[c(struc$hhid)] - tau[c(struc$tid)]) * sqrt(struc$w)
-
-    return(return_list)
+    delta <- A %*% Dy + B %*% Ty;
+    tau <- Matrix::crossprod(B, Dy) +
+      invHH %*% Ty +
+      invHHDH %*% A %*% Matrix::crossprod(invHHDH, Ty)
+    tau <- rbind(tau, 0)
+  } else {
+    delta <- invDD %*% Dy +
+      invDDDH %*% C %*% Matrix::crossprod(invDDDH, Dy) +
+      B %*% Ty
+    tau <- Matrix::crossprod(B, Dy) + C %*% Ty
+    tau <- rbind(tau, 0)
+    
+  }
+  
+  delta <- as.numeric(delta)
+  tau <- as.numeric(tau)
+  
+  return_list <- list()
+  return_list$delta <- delta
+  return_list$tau <- tau
+  return_list$var <- (var - delta[c(struc$hhid)] - tau[c(struc$tid)]) * sqrt(struc$w)
+  
+  return(return_list)
 }
