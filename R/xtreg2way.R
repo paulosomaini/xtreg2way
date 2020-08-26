@@ -264,7 +264,6 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     #ELSE
     #Arellano (1987) estimator is computed
   } else {
-    aVarHat <- avar(X, reg$res, cluster, reg$XX) * dof
       aVarHat <- avar(X, reg$res, struc$hhid, reg$XX)* dof
   }
   
