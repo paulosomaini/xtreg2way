@@ -61,7 +61,7 @@ xtreg2way <- function(y, ...){
 #'  and requires \code{data} as a data.frame
 #' @export
 xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL, 
-                              struc = NULL, se = "", cluster=NULL, noise = "", ...) {
+                              struc = NULL, se = "", cluster= NULL, noise = "", ...) {
   # This function inputs a formula
   # and creates variables compatable with xtreg2way.default
   #Check to see if labels exist
@@ -114,14 +114,14 @@ xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL,
     stop(paste("Error: NA values in the X argument (",
                attr(stats::terms(formula),"term.labels"),")",sep=" "))
   }
-
+  cluster<-cluster
   xtreg2way.default(y, X, iid, tid, w, struc, se, cluster, noise)
 }
 
 #' @describeIn xtreg2way Default Method
 #' @export
 xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL, 
-                             struc = NULL, se = "", cluster=NULL, noise = "",...) {
+                             struc = NULL, se = "", cluster= NULL, noise = "",...) {
   #This variable is needed for the return at the bottom
   struc_is_null <- is.null(struc)
   #If struc is passed, grab iid tid and w from it
@@ -229,7 +229,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     cluster<-struc$hhid
   }
   else{
-    cluster<-as.factor(cluster)
+    cluster<-as.factor(cluster[esample])
   }
   
   #SE == '0' for standard errors
