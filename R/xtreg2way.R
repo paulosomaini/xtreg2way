@@ -229,7 +229,12 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     cluster<-struc$hhid
   }
   else{
-    cluster<-as.factor(cluster[esample])
+    if (redundant$flag){
+      cluster<-as.factor(cluster[esample])
+    }
+    else{
+      cluster<-as.factor(cluster)
+    }
   }
   
   #SE == '0' for standard errors
