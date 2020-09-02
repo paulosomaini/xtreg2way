@@ -237,6 +237,17 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     }
   }
   
+  #nested adjustment
+  struc$nested_adj<-0
+  if (lme4::isNested(iid,cluster)){
+    struc$nested_adj<-length(unique(iid))
+  }
+  if(lme4::isNested(tid,cluster)){
+    struc$nested_ajd<-length(unique(tid))
+  }
+  if (lme4::isNested(iid,cluster) & lme4::isNested(tid,cluster)){
+    struc$nested_ajd<-length(unique(tid))+length(unique(iid))
+  }
   #SE == '0' for standard errors
   #assuming homoscedasticity and no within group correlation
   #or serial correlation
@@ -252,6 +263,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     #standard errors proposed by Arellano (1987) robust to
     #heteroscedasticity and serial correlation
   } else if (se == "1") {
+    dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta)+struc$correction_rank+struc$nested_adj)
     aVarHat <- avar(X, reg$res, cluster, reg$XX) * dof
     #SE == 2
     #it computes standard errors robust to heteroscedasticity,
