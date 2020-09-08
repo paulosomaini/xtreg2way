@@ -224,6 +224,20 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   betaHat <- Matrix::t(reg$beta)
   dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta)+struc$correction_rank)
 
+  if (se=="0" & !is.null(cluster)){
+    stop(paste("Error, you selected a standard error computation",
+               "that is not compatible with cluster"),sep = " ")
+    
+  }
+  if (se=="2" & !is.null(cluster)){
+    stop(paste("Error, you selected a standard error computation",
+               "that is not compatible with cluster"),sep = " ")
+    
+  }
+  if (se=="" & !is.null(cluster)){
+      se=1
+  }
+  
   #cluster option
   if (is.null(cluster)){
     cluster<-struc$hhid
@@ -248,6 +262,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   if (lme4::isNested(iid,cluster) & lme4::isNested(tid,cluster)){
     struc$nested_ajd<-length(unique(tid))+length(unique(iid))
   }
+  
   #SE == '0' for standard errors
   #assuming homoscedasticity and no within group correlation
   #or serial correlation
