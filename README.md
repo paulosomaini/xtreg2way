@@ -29,15 +29,15 @@ Finally, instead of passing your variables explicitly as `y` and `X`, you can pa
 
 ## Computing standard errors
 
-You can control the standard error computation using the option `se`.
+You can control the standard error computation using the options `se` & `cluster` .
 
 `output3 <- xtreg2way(..., se ="0")`
 
-computes standard errors assuming homoscedasticity and no within  group correlation or serial correlation.
+computes standard errors assuming homoscedasticity and no within  group correlation or serial correlation. This option will break if there is a clustervar selected.
 
-`output3 <- xtreg2way(..., se ="1")`
+`output3 <- xtreg2way(..., se ="1",cluster=clustervar)`
 
-produces the standard errors robust to heteroscedasticity and serial correlation proposed by Arellano (1987).
+produces the standard errors robust to heteroscedasticity and serial correlation proposed by Arellano (1987). This option will work with cluster specification, and will choose clustervar=iid if clustervar option is omitted.
 
 `output3 <- xtreg2way(..., se ="11")`
 
@@ -45,9 +45,12 @@ adds the degree of freedom correction performed by Stata xtreg, fe.
 
 `output3 <- xtreg2way(..., se ="2")`
 
-generates errors robust to heteroscedasticity but assumes no correlation within group or serial correlation, i.e., the "robust" estimator in Stata.
+generates errors robust to heteroscedasticity but assumes no correlation within group or serial correlation, i.e., the "robust" estimator in Stata. his option will break if there is a clustervar selected.
 
-If `se` is omitted, then it is set to `"1"` and the Arellano (1987) estimator is computed.  
+If `se` is omitted and clustervar is selected, then it is set to `"1"`.
+
+If `se` and `cluster` are omitted, then `se` is set to `"1"` and `cluster` is set to `iid`, and the Arellano (1987) estimator is computed.  
+
 
 ## Whats in this repo?
 
@@ -81,4 +84,7 @@ In the R console type `install.packages('xtreg2way')`. Then, load the library ty
 Arellano, M. (1987), Computing Robust Standard Errors for Within-Groups Estimators, Oxford Bulletin of Economics and
 Statistics, 49, issue 4, p. 431–434. 
 
+Cameron, A. C., & Miller, D. L. (2015). A practitioner’s guide to cluster-robust inference. Journal of human resources, 50(2), 317-372.
+
 Somaini, P. and F.A. Wolak, (2016), An Algorithm to Estimate the Two-Way Fixed Effects Model, Journal of Econometric Methods, 5, issue 1, p. 143-152.
+
