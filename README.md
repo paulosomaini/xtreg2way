@@ -39,10 +39,6 @@ computes standard errors assuming homoscedasticity and no within  group correlat
 
 produces the standard errors robust to heteroscedasticity and serial correlation proposed by Arellano (1987). This option will work with cluster specification, and will choose clustervar=iid if clustervar option is omitted.
 
-`output3 <- xtreg2way(..., se ="11")`
-
-adds the degree of freedom correction performed by Stata xtreg, fe. 
-
 `output3 <- xtreg2way(..., se ="2")`
 
 generates errors robust to heteroscedasticity but assumes no correlation within group or serial correlation, i.e., the "robust" estimator in Stata. his option will break if there is a clustervar selected.

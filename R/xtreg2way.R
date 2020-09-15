@@ -20,7 +20,6 @@
 #'        se=="0" : standard errors assuming homoscedasticity and no within  group correlation or serial correlation.
 #'        se=="1" : standard errors  proposed by Arellano (1987) robust to heteroscedasticity and serial correlation.
 #'        se=="2" : standard errors robust to heteroscedasticity but assumes no correlation within group or serial correlation.
-#'        se=="11" : Arellano standard errors with a degree of freedom correction performed by Stata xtreg, fe.
 #'        If se is omitted or set to [] then it is set to 1 and the Arellano (1987) estimator is computed.
 #' @param noise (optional) If noise is set to "1", then results are displayed
 #' @param ... Other parameters, based on method used
@@ -285,14 +284,6 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     #but assumes no correlation within group or serial correlation.
   } else if (se == "2") {
     aVarHat <- avar(X, reg$res, as.factor(1:obs), reg$XX) * dof
-    #SE == 11
-    #Arellano (1987) standard errors with a degree of freedom
-    #correction performed by Stata xtreg, fe
-  } else if (se == "11") {
-    aVarHat <- avar(X, reg$res, cluster, reg$XX)
-    N <- nlevels(struc$hhid)
-    stata_dof <- ((obs - 1) / (obs - length(reg$beta) - 1)) * (N / (N - 1))
-    aVarHat <- aVarHat * (stata_dof)^2;
     #ELSE
     #Arellano (1987) estimator is computed
   } else {
