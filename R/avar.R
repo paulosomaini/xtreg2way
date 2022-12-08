@@ -57,7 +57,7 @@ avar <- function(X, e, group=NULL, J=NULL) {
     V <- Matrix::t(eX) %*% eX
   } else {
     eX <- Matrix::sparseMatrix(i = as.numeric(group), j = 1:L,
-                       x = 1, dims = list(G, L)) %*% eX
+                       x = 1, dims = c(G, L)) %*% eX
     V <- Matrix::t(eX) %*% eX
   }
 
