@@ -53,7 +53,7 @@ projdummies <- function(hhid, tid, w) {
   T <- nlevels(tid_fac)
 
   DH <- Matrix::sparseMatrix(i = as.numeric(hhid_fac), j = as.numeric(tid_fac),
-                     x = w, dims = list(N, T))
+                     x = w, dims = c(N, T))
   DD <- Matrix::rowSums(DH)
   HH <- Matrix::colSums(DH)
 
@@ -61,9 +61,9 @@ projdummies <- function(hhid, tid, w) {
   HH <- HH[1:(length(HH) - 1)]
 
   invHH <- Matrix::sparseMatrix(i = 1 :(T - 1), j = 1 : (T - 1),
-                        x = HH^-1, dims = list(T - 1, T - 1))
+                        x = HH^-1, dims = c(T - 1, T - 1))
   invDD <- Matrix::sparseMatrix(i = 1:N, j = 1:N,
-                        x = DD^-1, dims = list(N, N))
+                        x = DD^-1, dims = c(N, N))
 
 
   if (N < T) {
