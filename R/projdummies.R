@@ -70,20 +70,24 @@ projdummies <- function(hhid, tid, w) {
       A <- MASS::ginv(as.matrix(diag(DD) - DH %*% invHH %*% Matrix::t(DH)))
       invHHDH <- invHH %*% Matrix::t(DH)
       B <- -A %*% DH %*% invHH
+      correction_rank<-N-qr(A)$rank
 
       return_list$A <- A
       return_list$invHHDH <- invHHDH
       return_list$invHH <- invHH
       return_list$B <- B
+      return_list$correction_rank<-correction_rank
     } else {
       C <- MASS::ginv(as.matrix(diag(HH) - (Matrix::t(DH) %*% invDD %*% DH)))
       invDDDH <- invDD %*% DH
       B <-  -invDD %*% DH %*% C
+      correction_rank<-T-qr(C)$rank
 
       return_list$B <- B
       return_list$C <- C
       return_list$invDD <- invDD
       return_list$invDDDH <- invDDDH
+      return_list$correction_rank<-correction_rank
     }
     return(return_list)
 }

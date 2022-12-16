@@ -20,7 +20,6 @@
 #'        se=="0" : standard errors assuming homoscedasticity and no within  group correlation or serial correlation.
 #'        se=="1" : standard errors  proposed by Arellano (1987) robust to heteroscedasticity and serial correlation.
 #'        se=="2" : standard errors robust to heteroscedasticity but assumes no correlation within group or serial correlation.
-#'        se=="11" : Arellano standard errors with a degree of freedom correction performed by Stata xtreg, fe.
 #'        If se is omitted or set to [] then it is set to 1 and the Arellano (1987) estimator is computed.
 #' @param noise (optional) If noise is set to "1", then results are displayed
 #' @param ... Other parameters, based on method used
@@ -61,7 +60,7 @@ xtreg2way <- function(y, ...){
 #'  and requires \code{data} as a data.frame
 #' @export
 xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL, 
-                              struc = NULL, se = "", noise = "", ...) {
+                              struc = NULL, se = "", cluster= NULL, noise = "", ...) {
   # This function inputs a formula
   # and creates variables compatable with xtreg2way.default
   #Check to see if labels exist
@@ -114,15 +113,14 @@ xtreg2way.formula <- function(formula, data, iid = NULL, tid = NULL, w = NULL,
     stop(paste("Error: NA values in the X argument (",
                attr(stats::terms(formula),"term.labels"),")",sep=" "))
   }
-  
-  
-  xtreg2way.default(y, X, iid, tid, w, struc, se, noise)
+  cluster<-cluster
+  xtreg2way.default(y, X, iid, tid, w, struc, se, cluster, noise)
 }
 
 #' @describeIn xtreg2way Default Method
 #' @export
 xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL, 
-                             struc = NULL, se = "", noise = "",...) {
+                             struc = NULL, se = "", cluster= NULL, noise = "",...) {
   #This variable is needed for the return at the bottom
   struc_is_null <- is.null(struc)
   #If struc is passed, grab iid tid and w from it
@@ -135,7 +133,7 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   X <- as.matrix(X)
   obs <- dim(X)[1]
   K <- dim(X)[2]
-
+  
   #If w is null, fill with ones
   if (is.null(w)) {
     w <- rep(1, obs)
@@ -158,12 +156,12 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   if(any(is.na(w))) {
     stop("Error: NA values in the w argument")
   }
-
+  
   #checking y and X dimensions
   if (length(y) != obs) {
     stop(paste("Error, Dimension Mismatch:",
-          "y must be a vector of length N,",
-          "and X must be a N by K matrix"), sep = " ")
+               "y must be a vector of length N,",
+               "and X must be a N by K matrix"), sep = " ")
   }
   
   
@@ -177,24 +175,24 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     iid <- iid[esample]
     tid <- tid[esample]
     w <- w[esample]
-    
+
     X <- as.matrix(X)
     obs <- dim(X)[1]
     K <- dim(X)[2]
   }
-
+  
   #If struc isn't provided
   if (is.null(struc)) {
     #we need iid and tid
     if (is.null(tid) | is.null(iid)) {
       stop(paste("Error: if struc isn't provided,",
-            "iid and tid are required arguments"))
+                 "iid and tid are required arguments"))
     }
     #Check length of iid and tid
     if (length(iid) != obs | length(tid) != obs) {
       stop(paste("Error, Dimension Mismatch:",
-            "iid and tid must be vectors of length N,",
-            "matching the length of y and rows of X"), sep = " ")
+                 "iid and tid must be vectors of length N,",
+                 "matching the length of y and rows of X"), sep = " ")
     }
     #Build struc
     struc <- projdummies(iid, tid, w)
@@ -202,13 +200,13 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     if (redundant$flag) {
       struc$esample <- esample
     }
-
+    
   } else {
     #Else, if struc is provided, check length of hhid and tid
     if (length(struc$hhid) != obs | length(struc$tid) != obs) {
       stop(paste("Error, Dimension Mismatch:",
-            "struc$hhid and struc$tid must be vectors of length N,",
-            "matching the length of y and rows of X"), sep = " ")
+                 "struc$hhid and struc$tid must be vectors of length N,",
+                 "matching the length of y and rows of X"), sep = " ")
     }
   }
   
@@ -223,7 +221,47 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   #Perform regression on projected variables
   reg <- regress1(y, X)
   betaHat <- Matrix::t(reg$beta)
-  dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta))
+  dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta)+struc$correction_rank)
+
+  if (se=="0" & !is.null(cluster)){
+    stop(paste("Error, you selected a standard error computation",
+               "that is not compatible with cluster"),sep = " ")
+    
+  }
+  if (se=="2" & !is.null(cluster)){
+    stop(paste("Error, you selected a standard error computation",
+               "that is not compatible with cluster"),sep = " ")
+    
+  }
+  if (se=="" & !is.null(cluster)){
+      se=1
+  }
+  
+  #cluster option
+  if (is.null(cluster)){
+    cluster<-struc$hhid
+  }
+  else{
+    if (redundant$flag){
+      cluster<-as.factor(cluster[esample])
+    }
+    else{
+      cluster<-as.factor(cluster)
+    }
+  }
+  
+  #nested adjustment
+  struc$nested_adj<-0
+  if (lme4::isNested(iid,cluster)){
+    struc$nested_adj<-length(unique(iid))
+  }
+  if(lme4::isNested(tid,cluster)){
+    struc$nested_ajd<-length(unique(tid))
+  }
+  if (lme4::isNested(iid,cluster) & lme4::isNested(tid,cluster)){
+    struc$nested_ajd<-length(unique(tid))+length(unique(iid))
+  }
+  
   #SE == '0' for standard errors
   #assuming homoscedasticity and no within group correlation
   #or serial correlation
@@ -231,31 +269,27 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
     N <- nlevels(struc$hhid)
     T <- nlevels(struc$tid)
     sig2hat <- (Matrix::t(reg$res) %*% reg$res) /
-      (sum(struc$w > 0) - N - T + 1 - length(reg$beta))
+    (sum(struc$w > 0) - N - T + 1 - length(reg$beta)+struc$correction_rank)
     aVarHat <- (as.numeric(sig2hat) * MASS::ginv(as.matrix(reg$XX)))
-  #SE=='1'
-  #standard errors proposed by Arellano (1987) robust to
-  #heteroscedasticity and serial correlation
+      (sum(struc$w > 0) - N - T + 1 - length(reg$beta))
+    aVarHat <- (as.numeric(sig2hat) * MASS::ginv((as.matrix(reg$XX))))
+    #SE=='1'
+    #standard errors proposed by Arellano (1987) robust to
+    #heteroscedasticity and serial correlation
   } else if (se == "1") {
-    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX) * dof
-  #SE == 2
-  #it computes standard errors robust to heteroscedasticity,
-  #but assumes no correlation within group or serial correlation.
+    dof <- obs / (obs - length(unique(iid)) - length(unique(tid)) - length(reg$beta)+struc$correction_rank+struc$nested_adj)
+    aVarHat <- avar(X, reg$res, cluster, reg$XX) * dof
+    #SE == 2
+    #it computes standard errors robust to heteroscedasticity,
+    #but assumes no correlation within group or serial correlation.
   } else if (se == "2") {
     aVarHat <- avar(X, reg$res, as.factor(1:obs), reg$XX) * dof
-  #SE == 11
-  #Arellano (1987) standard errors with a degree of freedom
-  #correction performed by Stata xtreg, fe
-  } else if (se == "11") {
-    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX)
-    N <- nlevels(struc$hhid)
-    stata_dof <- ((obs - 1) / (obs - length(reg$beta) - 1)) * (N / (N - 1))
-    aVarHat <- aVarHat * (stata_dof)^2;
-  #ELSE
-  #Arellano (1987) estimator is computed
+    #ELSE
+    #Arellano (1987) estimator is computed
   } else {
-    aVarHat <- avar(X, reg$res, struc$hhid, reg$XX) * dof
+      aVarHat <- avar(X, reg$res, struc$hhid, reg$XX)* dof
   }
+  
 
   #Build the noise DF and print it
   if (noise=="1") {
@@ -268,12 +302,12 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   }
   
   
-
-  #Return all that is needed
+  
+  #Return all that is neededz
   return_list <- list()
   return_list$betaHat <- betaHat
   return_list$aVarHat <- aVarHat
-
+  
   if (struc_is_null) {
     return_list$y <- y
     return_list$X <- X
@@ -282,4 +316,3 @@ xtreg2way.default<- function(y, X, iid = NULL, tid = NULL, w = NULL,
   class(return_list) <- "xtreg2way"
   return(return_list)
 }
-
