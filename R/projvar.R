@@ -54,7 +54,7 @@ projvar <- function(var, struc) {
     }
 
     aux <- Matrix::sparseMatrix(i = as.numeric(struc$hhid), j = as.numeric(struc$tid),
-                        x = as.numeric(var * struc$w), dims = list(N, T))
+                        x = as.numeric(var * struc$w), dims = c(N, T))
 
     Dy <- Matrix::rowSums(aux)
     Ty <- Matrix::colSums(aux)
